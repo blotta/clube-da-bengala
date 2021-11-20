@@ -1,0 +1,150 @@
+{% extends 'base.html' %}
+
+
+{% block header %}
+    <h1 class="my-3">{% block title %}Meus Endereços{% endblock %}</h1>
+{% endblock %}
+
+
+{% block content %}
+
+
+<div class="my-5 p-3 border">
+    <form class="row g-3" action="{{ url_for('usuarios.addresses', id = g.user['id']) }}" method="post">
+        <div class="col-md-2">
+            <label for="zipcode" class="form-label">CEP</label>
+            <input type="text" class="form-control" id="zipcode" name="zipcode">
+        </div>
+        <div class="col-md-6">
+            <label for="street" class="form-label">Rua</label>
+            <input type="text" class="form-control" id="street" name="street">
+        </div>
+        <div class="col-md-2">
+            <label for="number" class="form-label">Número</label>
+            <input type="text" class="form-control" id="number" name="number">
+        </div>
+        <div class="col-md-2">
+            <label for="complement" class="form-label">Complemento</label>
+            <input type="text" class="form-control" id="complement" name="complement">
+        </div>
+        <div class="col-md-4">
+            <label for="city" class="form-label">Cidade</label>
+            <input type="text" class="form-control" id="city" placeholder="" name="city">
+        </div>
+        <div class="col-md-4">
+            <label for="state" class="form-label">Estado</label>
+            <select id="state" name="state" class="form-select">
+                <option selected>Selecione...</option>
+                <option value="SP">SP</option>
+                <option value="RJ">RJ</option>
+            </select>
+        </div>
+        <div class="col-12">
+            <button type="submit" class="btn btn-primary">Salvar</button>
+        </div>
+        <input type="hidden" id="address_id" name="address_id" value="">
+    </form>
+</div>
+
+<div class="my-5 row">
+    <table class="table">
+        <thead>
+            <tr>
+                <th scope="col">CEP</th>
+                <th scope="col">Endereço</th>
+                <th scope="col">Cidade</th>
+                <th scope="col">Estado</th>
+                <th scope="col">Ações</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for a in addresses %}
+            <tr>
+                <td>{{ a.zipcode }}</td>
+                <td>{{ a.street }} {{ a.number}} {{ a.complement }}</td>
+                <td>{{ a.city }}</td>
+                <td>{{ a.state }}</td>
+                <td>
+                    <p><a href="#" data-city="{{ a.city }}" data-complement="{{ a.complement }}"
+                        data-zipcode="{{ a.zipcode }}" data-state="{{a.state}}" data-number="{{a.number}}"
+                        data-street="{{a.street}}" data-aid="{{a.id}}" class="x-edit">Editar</a></p>
+                    <p><a href="{{ url_for('usuarios.address_remove', id = g.user['id'], aid = a.id) }}">Remover</a></p>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.16/jquery.mask.min.js" integrity="sha512-pHVGpX7F/27yZ0ISY+VVjyULApbDlD0/X0rgGbTqCE7WFW5MezNTWG/dnhtbBuICzsd0WQPgpE4REBLv+UqChw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script>
+    window.estado = {
+        editing: null,
+
+        resetEditing: function() {
+            $("#zipcode").val('');
+            $("#street").val('');
+            $("#number").val('');
+            $("#complement").val('');
+            $("#city").val('');
+            $("#state").val('');
+            $("#address_id").val('');
+
+            $('.x-edit').each(function(idx, a) {
+                $(a).html('Editar');
+                $(a).parent().parent().parent().removeClass('table-primary');
+            });
+
+            window.estado.editing = null;
+        },
+
+        applyMasks: function() {
+            $("#zipcode").mask('00000-000');
+            $("#number").mask('0#');
+        }
+
+    };
+
+    $(document).ready(function() {
+
+        window.estado.applyMasks();
+
+        $(".x-edit").click(function(e) {
+            e.preventDefault();
+
+            let editAnother = false;
+            if (e.target != window.estado.editing) {
+                editAnother = true;
+            }
+
+            window.estado.resetEditing();
+
+            if (editAnother) {
+                $(this).html('Editando...');
+
+                $("#zipcode").val($(this).data('zipcode'));
+                $("#state").val($(this).data('state'));
+                $("#number").val($(this).data('number'));
+                $("#complement").val($(this).data('complement'));
+                $("#street").val($(this).data('street'));
+                $("#city").val($(this).data('city'));
+                $("#address_id").val($(this).data('aid'));
+
+                $(this).parent().parent().parent().addClass('table-primary');
+                window.estado.editing = e.target;
+            }
+        })
+    })
+    // $(document).ready(function() {
+    //     $(".x-edit").click(function(e) {
+    //         $(this).html('Editando...');
+    //         $("#zipcode").val($(this).data('zipcode'));
+    //         $("#state").val($(this).data('state'));
+    //         $("#number").val($(this).data('number'));
+    //         $("#complement").val($(this).data('complement'));
+    //         $("#street").val($(this).data('street'));
+    //         $("#city").val($(this).data('city'));
+    //         $("#address_id").val($(this).data('aid'));
+    //     })
+    // })
+</script>
+{% endblock%}

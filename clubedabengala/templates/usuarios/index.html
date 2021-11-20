@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+
+
+{% block header %}
+    <h1 class="text-center my-3">{% block title %}Solicitações{% endblock %}</h1>
+{% endblock %}
+
+
+{% block content %}
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th scope="col">#</th>
+            <th scope="col">Criado</th>
+            <th scope="col">Status</th>
+            <th scope="col">Usuario</th>
+            <th scope="col">Ações</th>
+        </tr>
+    </thead>
+    <tbody>
+
+{% for solicitacao in solicitacoes %}
+        <tr>
+            <th scope="row">{{ solicitacao.id }}</th>
+            <td>{{ solicitacao.created }}</td>
+            <td>{{ solicitacao.status }}</td>
+            <td>{{ solicitacao.username }}</td>
+            <td><a href="{{ url_for('solicitacoes.details', id = solicitacao.id) }}">Detalhes</a></td>
+        </tr>
+{% endfor%}
+
+    </tbody>
+
+</table>
+{% endblock%}

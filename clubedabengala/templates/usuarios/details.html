@@ -1,0 +1,51 @@
+{% extends 'base.html' %}
+
+
+{% block header %}
+    <h1 class="my-3">{% block title %}Perfil{% endblock %}</h1>
+{% endblock %}
+
+
+{% block content %}
+<div class="my-5">
+    <div class="row">
+        <div class="col-md-3">Código</div>
+        <div class="col-md-6">{{ u.id }}</div>
+    </div>
+    <div class="row">
+        <div class="col-md-3">Nome</div>
+        <div class="col-md-6">{{ u.name }}</div>
+    </div>
+    <div class="row">
+        <div class="col-md-3">Usuário</div>
+        <div class="col-md-6">{{ u.username }}</div>
+    </div>
+    <div class="row">
+        <div class="col-md-3">Telefone</div>
+        <div class="col-md-6">{{ u.mobilenumber }}</div>
+    </div>
+    <div class="row">
+        <div class="col-md-3">Email</div>
+        <div class="col-md-6">{{ u.email }}</div>
+    </div>
+    <div class="row">
+        <div class="col-md-3">Sou beneficiário</div>
+        <div class="col-md-6">{{ beneficiario }}</div>
+    </div>
+    {% if not beneficiario %}
+    <div class="row">
+        <a href="">Me tornar beneficiario</a>
+    </div>
+    {% endif %}
+</div>
+
+<div class="my-5 row">
+    <div class="col-md-6">
+        <div class="list-group">
+            <a href="{{ url_for('usuarios.addresses', id = g.user['id']) }}" class="list-group-item list-group-item-action">Meus Endereços</a>
+            <a href="{{ url_for('usuarios.emprestimos', id = g.user['id']) }}" class="list-group-item list-group-item-action">Meus Empréstimos</a>
+            <a href="{{ url_for('usuarios.beneficiarios', id = g.user['id']) }}" class="list-group-item list-group-item-action">Beneficiários</a>
+        </div>
+    </div>
+</div>
+{% endblock%}

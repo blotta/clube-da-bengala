@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+
+
+{% block header %}
+    <h1 class="text-center my-3">{% block title %}Empréstimo{% endblock %}</h1>
+{% endblock %}
+
+
+{% block content %}
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th scope="col">#</th>
+            <th scope="col">Criado</th>
+            <th scope="col">Soliciacao</th>
+            <th scope="col">Usuario</th>
+            <th scope="col"></th>
+        </tr>
+    </thead>
+    <tbody>
+
+        <tr>
+            <th scope="row">{{ emprestimo.id }}</th>
+            <td>{{ emprestimo.created }}</td>
+            <td>{{ emprestimo.solicitacao_id }}</td>
+            <td>{{ emprestimo.username }}</td>
+            <td>{{ url_for('emprestimos.details', id = emprestimo.id) }}</td>
+        </tr>
+
+    </tbody>
+
+</table>
+{% endblock%}

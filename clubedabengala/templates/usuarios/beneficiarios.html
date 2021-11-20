@@ -1,0 +1,130 @@
+{% extends 'base.html' %}
+
+
+{% block header %}
+    <h1 class="my-3">{% block title %}Meus Beneficiários{% endblock %}</h1>
+{% endblock %}
+
+
+{% block content %}
+
+
+<div class="my-5 p-3 border">
+    <form class="row g-3" action="{{ url_for('usuarios.beneficiarios', id = g.user['id']) }}" method="post">
+        <div class="col-md-6">
+            <label for="name" class="form-label">Nome</label>
+            <input type="text" class="form-control" id="name" name="name">
+        </div>
+        <div class="col-md-2">
+            <label for="dataNascimento" class="form-label">Data Nascimento</label>
+            <input type="text" class="form-control" id="dataNascimento" name="dataNascimento">
+        </div>
+        <div class="col-md-1">
+            <label for="altura" class="form-label">Altura</label>
+            <input type="text" class="form-control" id="altura" name="altura">
+        </div>
+        <div class="col-md-1">
+            <label for="peso" class="form-label">Peso</label>
+            <input type="text" class="form-control" id="peso" name="peso">
+        </div>
+        <div class="col-md-1">
+            <label for="nrCalcado" class="form-label">Nr&nbsp;Calçado</label>
+            <input type="text" class="form-control" id="nrCalcado" placeholder="" name="nrCalcado">
+        </div>
+        <div class="col-12">
+            <button type="submit" class="btn btn-primary">Salvar</button>
+        </div>
+        <input type="hidden" id="beneficiario_id" name="beneficiario_id" value="">
+    </form>
+</div>
+
+<div class="my-5 row">
+    <table class="table">
+        <thead>
+            <tr>
+                <th scope="col">Nome</th>
+                <th scope="col">Data Nascimento</th>
+                <th scope="col">Altura</th>
+                <th scope="col">Peso</th>
+                <th scope="col">Nr Calçado</th>
+                <th scope="col">Ações</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for b in beneficiarios %}
+            <tr>
+                <td>{{ b.name }}</td>
+                <td>{{ b.dataNascimento }}</td>
+                <td>{{ b.altura }}</td>
+                <td>{{ b.peso }}</td>
+                <td>{{ b.nrCalcado }}</td>
+                <td>
+                    <p><a href="" data-name="{{ b.name }}" data-datanascimento="{{ b.dataNascimento }}"
+                        data-altura="{{ b.altura }}" data-peso="{{b.peso}}" data-nrcalcado="{{b.nrCalcado}}"
+                        data-beneficiarioid="{{ b.id }}" class="x-edit">Editar</a></p>
+                    <p><a href="{{ url_for('usuarios.beneficiarios_remove', id = g.user['id'], bid = b.id) }}">Remover</a></p>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.16/jquery.mask.min.js" integrity="sha512-pHVGpX7F/27yZ0ISY+VVjyULApbDlD0/X0rgGbTqCE7WFW5MezNTWG/dnhtbBuICzsd0WQPgpE4REBLv+UqChw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script>
+    window.estado = {
+        editing: null,
+
+        resetEditing: function() {
+            $("#name").val('');
+            $("#dataNascimento").val('');
+            $("#altura").val('');
+            $("#peso").val('');
+            $("#nrCalcado").val('');
+            $("#beneficiario_id").val('');
+
+            $('.x-edit').each(function(idx, a) {
+                $(a).html('Editar');
+                $(a).parent().parent().parent().removeClass('table-primary');
+            });
+
+            window.estado.editing = null;
+        },
+
+        applyMasks: function() {
+            $("#dataNascimento").mask('00-00-0000');
+            $("#altura").mask('0,00');
+            $("#peso").mask('0,00');
+            $("#nrCalcado").mask('00');
+        }
+
+    };
+
+    $(document).ready(function() {
+
+        window.estado.applyMasks();
+
+        $(".x-edit").click(function(e) {
+            e.preventDefault();
+
+            let editAnother = false;
+            if (e.target != window.estado.editing) {
+                editAnother = true;
+            }
+
+            window.estado.resetEditing();
+
+            if (editAnother) {
+                $(this).html('Editando...');
+                $("#name").val($(this).data('name'));
+                $("#dataNascimento").val($(this).data('datanascimento'));
+                $("#altura").val($(this).data('altura'));
+                $("#peso").val($(this).data('peso'));
+                $("#nrCalcado").val($(this).data('nrcalcado'));
+                $("#beneficiario_id").val($(this).data('beneficiarioid'));
+                $(this).parent().parent().parent().addClass('table-primary');
+                window.estado.editing = e.target;
+            }
+        })
+    })
+</script>
+{% endblock%}

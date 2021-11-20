@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+
+
+{% block header %}
+    <h1 class="my-3">{% block title %}Novo Empréstimo{% endblock %}</h1>
+{% endblock %}
+
+
+{% block content %}
+<div class="my-5 p-3 border">
+    <form class="row g-3" action="{{ url_for('usuarios.beneficiarios', id = g.user['id']) }}" method="post">
+        <div class="col-md-6">
+            <label for="name" class="form-label">Nome</label>
+            <input type="text" class="form-control" id="name" name="name">
+        </div>
+        <div class="col-md-2">
+            <label for="dataNascimento" class="form-label">Data Nascimento</label>
+            <input type="text" class="form-control" id="dataNascimento" name="dataNascimento">
+        </div>
+        <div class="col-md-1">
+            <label for="altura" class="form-label">Altura</label>
+            <input type="text" class="form-control" id="altura" name="altura">
+        </div>
+        <div class="col-md-1">
+            <label for="peso" class="form-label">Peso</label>
+            <input type="text" class="form-control" id="peso" name="peso">
+        </div>
+        <div class="col-md-1">
+            <label for="nrCalcado" class="form-label">Nr&nbsp;Calçado</label>
+            <input type="text" class="form-control" id="nrCalcado" placeholder="" name="nrCalcado">
+        </div>
+        <div class="col-12">
+            <button type="submit" class="btn btn-primary">Salvar</button>
+        </div>
+        <input type="hidden" id="beneficiario_id" name="beneficiario_id" value="">
+    </form>
+</div>
+{% endblock%}
