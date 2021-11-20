@@ -8,9 +8,9 @@ from werkzeug.exceptions import abort
 from clubedabengala.auth import abort_if_not_in_role, login_required
 from clubedabengala.db import get_db
 
-bp = Blueprint('usuarios', __name__)
+bp = Blueprint('usuario', __name__)
 
-@bp.route('/usuarios')
+@bp.route('/usuario')
 @login_required
 def index():
     abort_if_not_in_role("Colaborador")
@@ -21,15 +21,15 @@ def index():
         ' JOIN users u ON e.dest_user_id = u.id'
         ' ORDER BY e.created DESC'
     ).fetchall()
-    return render_template('usuarios/index.html', usuarios=usuarios)
+    return render_template('usuario/index.html', usuarios=usuarios)
 
 
-@bp.route('/usuarios/<int:id>')
+@bp.route('/usuario/<int:id>')
 @login_required
 def details(id):
     u = get_usuario(id)
     beneficiario = "Beneficiario" in session['roles']
-    return render_template('usuarios/details.html', u=u, beneficiario = beneficiario)
+    return render_template('usuario/details.html', u=u, beneficiario = beneficiario)
 
 def get_usuario(id):
     db = get_db()
@@ -45,7 +45,7 @@ def get_usuario(id):
     
     return u
 
-@bp.route('/usuarios/<int:id>/addresses', methods=['GET', 'POST'])
+@bp.route('/usuario/<int:id>/addresses', methods=['GET', 'POST'])
 @login_required
 def addresses(id):
     db = get_db()
@@ -78,16 +78,16 @@ def addresses(id):
         ' WHERE a.user_id = ? and a.active = 1',
         (id,)
     ).fetchall()
-    return render_template('usuarios/addresses.html', addresses = addresses)
+    return render_template('usuario/addresses.html', addresses = addresses)
 
 
-@bp.route('/usuarios/<int:id>/addresses/<int:aid>/remove', methods=['GET', 'POST'])
+@bp.route('/usuario/<int:id>/addresses/<int:aid>/remove', methods=['GET', 'POST'])
 @login_required
 def address_remove(id, aid):
     db = get_db()
     db.execute( 'UPDATE addresses set active = 0 where id = ?', (aid, ))
     db.commit()
-    return redirect(url_for('usuarios.addresses', id = id))
+    return redirect(url_for('usuario.addresses', id = id))
 
 
 
@@ -96,7 +96,7 @@ def address_remove(id, aid):
 # BENEFICIARIOS #
 #################
 
-@bp.route('/usuarios/<int:id>/beneficiarios', methods=['GET', 'POST'])
+@bp.route('/usuario/<int:id>/beneficiarios', methods=['GET', 'POST'])
 @login_required
 def beneficiarios(id):
     db = get_db()
@@ -128,22 +128,22 @@ def beneficiarios(id):
         ' WHERE b.responsavel_id = ? and b.active = 1',
         (id,)
     ).fetchall()
-    return render_template('usuarios/beneficiarios.html', beneficiarios = beneficiarios)
+    return render_template('usuario/beneficiarios.html', beneficiarios = beneficiarios)
 
-@bp.route('/usuarios/<int:id>/beneficiarios/<int:bid>/remove', methods=['GET', 'POST'])
+@bp.route('/usuario/<int:id>/beneficiarios/<int:bid>/remove', methods=['GET', 'POST'])
 @login_required
 def beneficiarios_remove(id, bid):
     db = get_db()
     db.execute( 'UPDATE beneficiarios set active = 0 where id = ?', (bid, ))
     db.commit()
-    return redirect(url_for('usuarios.beneficiarios', id = id))
+    return redirect(url_for('usuario.beneficiarios', id = id))
 
 
 ###############
 # EMPRÉSTIMOS #
 ###############
 
-@bp.route('/usuarios/<int:id>/emprestimos', methods=['GET', 'POST'])
+@bp.route('/usuario/<int:id>/emprestimos', methods=['GET', 'POST'])
 @login_required
 def emprestimos(id):
     db = get_db()
@@ -157,4 +157,4 @@ def emprestimos(id):
         ' WHERE sol.id = ?',
         (id,)
     ).fetchall()
-    return render_template('usuarios/emprestimos.html', emprestimos = emprestimos)
+    return render_template('usuario/emprestimos.html', emprestimos = emprestimos)

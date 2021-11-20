@@ -42,8 +42,8 @@ def create_app(test_config=None):
     # from . import solicitacoes
     # app.register_blueprint(solicitacoes.bp)
 
-    from . import usuarios
-    app.register_blueprint(usuarios.bp)
+    from . import usuario
+    app.register_blueprint(usuario.bp)
 
     @app.route('/')
     def index():
@@ -55,6 +55,6 @@ def create_app(test_config=None):
             return redirect(url_for('emprestimos.index'))
         
         app.logger.debug("Benefic")
-        return redirect(url_for('usuarios.details', id = uid))
+        return redirect(url_for('usuario.details', id = uid))
 
     return app

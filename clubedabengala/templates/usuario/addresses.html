@@ -10,7 +10,7 @@
 
 
 <div class="my-5 p-3 border">
-    <form class="row g-3" action="{{ url_for('usuarios.addresses', id = g.user['id']) }}" method="post">
+    <form class="row g-3" action="{{ url_for('usuario.addresses', id = g.user['id']) }}" method="post">
         <div class="col-md-2">
             <label for="zipcode" class="form-label">CEP</label>
             <input type="text" class="form-control" id="zipcode" name="zipcode">
@@ -68,14 +68,13 @@
                     <p><a href="#" data-city="{{ a.city }}" data-complement="{{ a.complement }}"
                         data-zipcode="{{ a.zipcode }}" data-state="{{a.state}}" data-number="{{a.number}}"
                         data-street="{{a.street}}" data-aid="{{a.id}}" class="x-edit">Editar</a></p>
-                    <p><a href="{{ url_for('usuarios.address_remove', id = g.user['id'], aid = a.id) }}">Remover</a></p>
+                    <p><a href="{{ url_for('usuario.address_remove', id = g.user['id'], aid = a.id) }}">Remover</a></p>
                 </td>
             </tr>
             {% endfor %}
         </tbody>
     </table>
 </div>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.16/jquery.mask.min.js" integrity="sha512-pHVGpX7F/27yZ0ISY+VVjyULApbDlD0/X0rgGbTqCE7WFW5MezNTWG/dnhtbBuICzsd0WQPgpE4REBLv+UqChw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 <script>
     window.estado = {
         editing: null,
@@ -134,17 +133,5 @@
             }
         })
     })
-    // $(document).ready(function() {
-    //     $(".x-edit").click(function(e) {
-    //         $(this).html('Editando...');
-    //         $("#zipcode").val($(this).data('zipcode'));
-    //         $("#state").val($(this).data('state'));
-    //         $("#number").val($(this).data('number'));
-    //         $("#complement").val($(this).data('complement'));
-    //         $("#street").val($(this).data('street'));
-    //         $("#city").val($(this).data('city'));
-    //         $("#address_id").val($(this).data('aid'));
-    //     })
-    // })
 </script>
 {% endblock%}

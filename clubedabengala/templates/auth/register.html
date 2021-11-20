@@ -34,4 +34,18 @@
         </form>
     </div>
 </div>
+<script>
+    window.estado = {
+        init: function() {
+            window.estado.applyMasks();
+        },
+        applyMasks: function() {
+            $('#mobilenumber').mask('(00) #0000-0000');
+        }
+    }
+    $(document).ready(function() {
+        window.estado.init();
+
+    })
+</script>
 {% endblock %}
