@@ -1,0 +1,238 @@
+{% extends 'base.html' %}
+
+
+{% block header %}
+    <h1 class="my-3">{% block title %}Novo Empréstimo{% endblock %}</h1>
+{% endblock %}
+
+
+{% block content %}
+
+<div class="my-5 p-3 border">
+
+    <form action="" method="post">
+        <div class="row">
+            <div class="col-md-6">
+                <div class="mb-3">
+                    <label for="beneficiario_id" class="form-label">Beneficiário</label>
+                    <select class="form-select" name="beneficiario_id" id="beneficiario_id" required>
+                        <option value="">Selecione..</option>
+                        {% for b in viewmodel.beneficiarios %}
+                        <option value="{{ b.id }}">{{ b.name }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="mb-3">
+                    <label for="address_id" class="form-label">Endereço</label>
+                    <select class="form-select" name="address_id" id="address_id" required>
+                        <option value="">Selecione..</option>
+                        {% for a in viewmodel.addresses %}
+                        <option value="{{ a.id }}">{{ a.street }} {{ a.number }} {{ a.complement }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="mb-3">
+                    <label for="dataEsperadaRange" class="form-label">Data Esperada</label>
+                    <div class="input-group" id="dataEsperadaRange">
+                        <span class="input-group-text">De</span>
+                        <input type="text" class="form-control" id="dataInicio" name="dataInicio" required>
+                        <span class="input-group-text">Até</span>
+                        <input type="text" class="form-control" id="dataFim" name="dataFim" required>
+                    </div>
+                </div>
+                <div class="mb-3">
+                    <label for="motivo" class="form-label">Motivo</label>
+                    <textarea class="form-control" id="motivo" name="motivo" required></textarea>
+                </div>
+                <div class="mb-3">
+                    <label for="obs" class="form-label">Observações</label>
+                    <textarea class="form-control" id="obs" name="obs"></textarea>
+                </div>
+            </div>
+
+            <div class="col-md-6">
+                <div class="card text-dark bg-light">
+                    <h5 class="card-header">Equipamento</h5>
+                    <!-- <img src="" alt=""> -->
+
+                    <div class="card-body">
+                        <!-- <h3 class="card-title mb-3">Equipamento</h3> -->
+                        <div class="card-text">
+                            <div class="input-group mb-3">
+                                <label for="equip_type" class="input-group-text">Tipo</label>
+                                <select class="form-select" name="equip_type" id="equip_type" required>
+                                    <option value="">Selecione...</option>
+                                    {% for t in viewmodel.equip_classifications %}
+                                    <option value="{{ t.id }}">{{ t.name }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            <div class="input-group mb-3">
+                                <label for="equip_model" class="input-group-text">Modelo</label>
+                                <select class="form-select" name="equip_model" id="equip_model" required>
+                                </select>
+                            </div>
+                            <div class="input-group mb-3">
+                                <label for="equip_size" class="input-group-text">Tamanho</label>
+                                <select class="form-select" name="equip_size" id="equip_size">
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-12">
+                <div class="d-grid gap-2 col-6 mx-auto">
+                    <button class="btn btn-primary" type="submit">Solicitar</button>
+                </div>
+            </div>
+
+        </div>
+    </form>
+</div>
+
+<script>
+    window.estado = {
+        // equips: {{ viewmodel.equip_classifications | tojson }},
+        equips: [{"id": 1, "models": [{"name": "Manual", "num": 1, "sizes": []}, {"name": "Motorizada", "num": 2, "sizes": []}], "name": "Cama Hospitalar"}, {"id": 2, "models": [{"name": "Standard Adulto", "num": 1, "sizes": []}, {"name": "Especial Adulto", "num": 2, "sizes": [{"desc": "At\u00e9 120kg", "id": 1}]}, {"name": "Adaptada Infantil", "num": 4, "sizes": []}], "name": "Cadeira de Rodas"}, {"id": 3, "models": [{"name": "Standard Adulto", "num": 1, "sizes": []}, {"name": "Especial Adulto", "num": 2, "sizes": []}], "name": "Cadeira de Banho"}, {"id": 4, "models": [{"name": "Articulado", "num": 1, "sizes": []}, {"name": "Especial Adulto", "num": 2, "sizes": []}, {"name": "Especial Infantil", "num": 4, "sizes": []}], "name": "Andador"}, {"id": 5, "models": [{"name": "Alum\u00ednio (par) Adulto", "num": 1, "sizes": [{"desc": "P - 1,37m a 1,57m", "id": 2}, {"desc": "M - 1,57m a 1,78m", "id": 3}, {"desc": "G - 1,78m a 1,98m", "id": 4}]}, {"name": "Madeira (par) Adulto", "num": 2, "sizes": [{"desc": "P - 1,37m a 1,57m", "id": 5}, {"desc": "M - 1,57m a 1,78m", "id": 6}, {"desc": "G - 1,78m a 1,98m", "id": 7}]}, {"name": "Alum\u00ednio (par) Infantil", "num": 3, "sizes": [{"desc": "\u00danico - Entre 1,22m e 1,37m", "id": 8}]}], "name": "Muleta Axilar"}, {"id": 6, "models": [{"name": "Par Adulto", "num": 3, "sizes": [{"desc": "P - 1,37m a 1,57m", "id": 9}, {"desc": "M - 1,57m a 1,78m", "id": 10}, {"desc": "G - 1,78m a 1,98m", "id": 11}]}, {"name": "Par Infantil", "num": 4, "sizes": []}], "name": "Muleta Canadense (de bra\u00e7o)"}, {"id": 7, "models": [{"name": "Fixo", "num": 1, "sizes": [{"desc": "P - 50cm", "id": 18}, {"desc": "M - 60cm", "id": 19}, {"desc": "G - 70cm", "id": 20}]}], "name": "Imobilizador de Joelho"}, {"id": 8, "models": [{"name": "Madeira", "num": 1, "sizes": []}, {"name": "Alum\u00ednio", "num": 2, "sizes": []}, {"name": "Deficiente Visual", "num": 3, "sizes": []}, {"name": "Quatro Pontos", "num": 4, "sizes": []}], "name": "Bengala"}, {"id": 9, "models": [{"name": "Robofoot Curta", "num": 1, "sizes": [{"desc": "P", "id": 12}, {"desc": "M", "id": 13}, {"desc": "G", "id": 14}]}, {"name": "Robofoot Longa", "num": 2, "sizes": [{"desc": "P", "id": 15}, {"desc": "M", "id": 16}, {"desc": "G", "id": 17}]}], "name": "Bota Imobilizadora"}, {"id": 15, "models": [{"name": "Padr\u00e3o", "num": 1, "sizes": []}], "name": "Tipoia"}, {"id": 18, "models": [{"name": "Espuma", "num": 1, "sizes": []}], "name": "Colar Cervical"}, {"id": 19, "models": [{"name": "Padr\u00e3o", "num": 1, "sizes": []}], "name": "Imobilizador P\u00e9 / Tornozelo"}, {"id": 20, "models": [{"name": "Caixa de Ovo", "num": 1, "sizes": []}], "name": "Colch\u00e3o"}, {"id": 27, "models": [{"name": "Padr\u00e3o", "num": 1, "sizes": []}], "name": "Joelheira"}],
+
+        dateFormat: 'dd/mm/yy',
+        init: function() {
+            window.estado.configDatepicker();
+            window.estado.configEquip();
+        },
+
+        configEquip: function() {
+            $("#equip_type").change(function() {
+                if ($(this).val() == '') {
+                    $("#equip_model").html('').closest('div').hide();
+                    $("#equip_size").html('').closest('div').hide();
+                } else {
+                    window.estado.populateModels($(this).val());
+                }
+            });
+
+            $('#equip_model').change(function() {
+                window.estado.populateSizes($('#equip_type').val(), $(this).val());
+            });
+
+            $("#equip_type").trigger('change');
+        },
+
+        populateModels: function(type_id) {
+            $('#equip_model').html('');
+            const type = window.estado.equips.filter((t) => t.id == type_id)[0];
+            for (model of type.models) {
+                $('#equip_model').append('<option value="'+model.num+'">'+model.name+'</option>');
+            }
+            $('#equip_model').closest('div').show();
+            $('#equip_model').trigger('change');
+        },
+
+        populateSizes: function(type_id, model_num) {
+            $('#equip_size').html('').closest('div').hide();
+            const model = window.estado.equips.filter((t) => t.id == type_id)[0]
+                .models.filter((m) => m.num == model_num)[0];
+
+            if (model.sizes.length > 0) {
+                for (size of model.sizes) {
+                    $('#equip_size').append('<option value="' + size.id + '">'+size.desc+'</option>');
+                }
+                $('#equip_size').closest('div').show();
+            }
+        },
+
+        configDatepicker: function() {
+
+            // $.datepicker.setDefaults($.datepicker.regional['pt-BR']);
+            // $.datepicker.formatDate(window.estado.dateFormat, .datepicker.regional['pt-BR']);
+
+            $("#dataInicio").datepicker({
+                defaultDate: "+1d",
+                changeMonth: true,
+                dateFormat: window.estado.dateFormat
+            })
+            .on("change", function() {
+                $("#dataFim").datepicker("option", "minDate", window.estado.getDate(this));
+            });
+
+            const to = $("#dataFim").datepicker({
+                defaultDate: "+1m",
+                changeMonth: true,
+                dateFormat: window.estado.dateFormat
+            })
+            .on("change", function() {
+                $("#dataInicio").datepicker("option", "maxDate", window.estado.getDate(this));
+            });
+        },
+        getDate: function(element) {
+            let date;
+            try {
+                date = $.datepicker.parseDate(window.estado.dateFormat, element.value);
+            } catch (error) {
+                date = null;
+            }
+            return date;
+        }
+    }
+    $(document).ready(function() {
+        window.estado.init();
+    });
+    // window.estado = {
+    //     editing: null,
+
+    //     resetEditing: function() {
+    //         $("#name").val('');
+    //         $("#dataNascimento").val('');
+    //         $("#altura").val('');
+    //         $("#peso").val('');
+    //         $("#nrCalcado").val('');
+    //         $("#beneficiario_id").val('');
+
+    //         $('.x-edit').each(function(idx, a) {
+    //             $(a).html('Editar');
+    //             $(a).parent().parent().parent().removeClass('table-primary');
+    //         });
+
+    //         window.estado.editing = null;
+    //     },
+
+    //     applyMasks: function() {
+    //         $("#dataNascimento").mask('00-00-0000');
+    //         $("#altura").mask('0,00');
+    //         $("#peso").mask('0,00');
+    //         $("#nrCalcado").mask('00');
+    //     }
+
+    // };
+
+    // $(document).ready(function() {
+
+    //     window.estado.applyMasks();
+
+    //     $(".x-edit").click(function(e) {
+    //         e.preventDefault();
+
+    //         let editAnother = false;
+    //         if (e.target != window.estado.editing) {
+    //             editAnother = true;
+    //         }
+
+    //         window.estado.resetEditing();
+
+    //         if (editAnother) {
+    //             $(this).html('Editando...');
+    //             $("#name").val($(this).data('name'));
+    //             $("#dataNascimento").val($(this).data('datanascimento'));
+    //             $("#altura").val($(this).data('altura'));
+    //             $("#peso").val($(this).data('peso'));
+    //             $("#nrCalcado").val($(this).data('nrcalcado'));
+    //             $("#beneficiario_id").val($(this).data('beneficiarioid'));
+    //             $(this).parent().parent().parent().addClass('table-primary');
+    //             window.estado.editing = e.target;
+    //         }
+    //     })
+    // })
+</script>
+{% endblock%}

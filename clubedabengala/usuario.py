@@ -1,4 +1,6 @@
 import datetime
+import json
+from typing import Dict
 
 from flask import (
     Blueprint, flash, g, redirect, render_template, request, url_for, session, app
@@ -143,18 +145,149 @@ def beneficiarios_remove(id, bid):
 # EMPRÉSTIMOS #
 ###############
 
-@bp.route('/usuario/<int:id>/emprestimos', methods=['GET', 'POST'])
+@bp.route('/usuario/<int:id>/emprestimos', methods=['GET'])
 @login_required
 def emprestimos(id):
-    db = get_db()
-    emprestimos = db.execute(
-        'SELECT e.id, e.created, e.status, est.status status_name,'
-        ' e.solicitante_id, sol.name solicitante_name, e.beneficiario_id, ben.name beneficiario_name'
-        ' FROM emprestimos e'
-        ' JOIN users sol ON sol.id = e.solicitante_id'
-        ' JOIN beneficiarios ben ON ben.id = e.beneficiario_id'
-        ' JOIN emprestimos_status est on est.id = e.status'
-        ' WHERE sol.id = ?',
-        (id,)
-    ).fetchall()
+    emprestimos = get_emprestimos(uid = id)
     return render_template('usuario/emprestimos.html', emprestimos = emprestimos)
+
+@bp.route('/usuario/<int:id>/emprestimos/<int:eid>', methods=['GET', 'POST'])
+@login_required
+def emprestimos_details(id, eid):
+    e = get_emprestimos(eid = eid)[0]
+    if e is None:
+        abort(404, "Empréstimo não existe")
+    return render_template('usuario/emprestimos_details.html', e = e)
+
+def get_emprestimos(**filter):
+    db = get_db()
+    query = """
+        SELECT
+            e.id
+            , e.created
+            , est.status
+            , u.id solicitante_id
+            , u.name solicitante_name
+            , b.id beneficiario_id
+            , b.name beneficiario_name
+            , strftime('%d/%m/%Y', e.data_inicio) data_inicio
+            , strftime('%d/%m/%Y', e.data_fim) data_fim
+            , e.motivo
+            , e.obs
+            , et.id equip_type_id
+            , et.name equip_type_name
+            , em.model_num equip_model_num
+            , em.name equip_model_name
+            , es.id equip_size_id
+            , es.desc equip_size_desc
+        FROM emprestimos e
+        JOIN emprestimos_status est on est.id = e.status
+        JOIN users u on u.id = e.solicitante_id
+        JOIN beneficiarios b on b.id = e.beneficiario_id
+        JOIN equip_types et on et.id = e.equip_type
+        JOIN equip_models em on em.model_num = e.equip_model and em.equip_type_id = et.id
+        LEFT JOIN equip_sizes es on es.id = e.equip_size
+    """
+
+    filter_query = []
+    params = []
+
+    if 'eid' in filter:
+        filter_query.append('e.id = ?')
+        params.append(filter['eid'])
+    if 'uid' in filter:
+        filter_query.append('e.solicitante_id = ?')
+        params.append(filter['uid'])
+    
+    if len(filter_query) > 0:
+        query += ' WHERE ' + " AND ".join(filter_query)
+
+    return db.execute(query, tuple(params)).fetchall()
+
+
+@bp.route('/usuario/<int:id>/emprestimos/create', methods=['GET', 'POST'])
+@login_required
+def emprestimos_create(id):
+    db = get_db()
+
+    if request.method == "POST":
+        beneficiario_id = request.form['beneficiario_id']
+        address_id = request.form['address_id']
+        dataInicio = datetime.datetime.strptime(request.form['dataInicio'], '%d/%m/%Y')
+        dataFim = datetime.datetime.strptime(request.form['dataFim'], '%d/%m/%Y')
+        motivo = request.form['motivo']
+        obs = request.form['obs']
+        equip_type = request.form['equip_type']
+        equip_model = request.form['equip_model']
+        equip_size = request.form.get('equip_size')
+        result = db.execute(
+            'INSERT INTO emprestimos'
+            ' (status, solicitante_id, beneficiario_id, data_inicio, data_fim, motivo, obs, equip_type, equip_model, equip_size)'
+            ' VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+            (0, id, beneficiario_id, dataInicio, dataFim, motivo, obs, equip_type, equip_model, equip_size)
+        )
+        db.commit()
+        print("EEEEEEEIIIIII" + str(result.lastrowid))
+        return redirect(url_for('usuario.emprestimos_details', id = id, eid = result.lastrowid))
+
+
+    viewmodel = {}
+    viewmodel['beneficiarios'] = get_user_beneficiarios(id)
+    viewmodel['addresses'] = get_user_addresses(id)
+    viewmodel['equip_classifications'] = get_equip_classifications()
+
+    if (len(viewmodel['beneficiarios']) == 0):
+        flash(f"Você não possui beneficiários cadastrados. <a href='{url_for('usuario.beneficiarios', id = id)}'>Cadastre aqui</a>")
+
+    if (len(viewmodel['addresses']) == 0):
+        flash(f"Você não possui um endrereço cadastrado. <a href='{url_for('usuario.addresses', id = id)}'>Cadastre aqui</a>")
+
+    # print(json.dumps(get_equip_classifications()))
+
+    return render_template('usuario/emprestimos_create.html', viewmodel = viewmodel)
+
+
+
+def get_user_beneficiarios(id):
+    db = get_db()
+    a = db.execute(
+        "SELECT b.id, b.name, strftime('%d-%m-%Y', b.dataNascimento) dataNascimento, b.altura, b.peso, b.nrCalcado"
+        ' from beneficiarios b where responsavel_id = ? and b.active = 1'
+        , (id,)).fetchall()
+    return a
+
+
+def get_user_addresses(id):
+    db = get_db()
+    a = db.execute('SELECT * FROM addresses where user_id = ? and active = 1', (id,)).fetchall()
+    return a
+
+def get_equip_classifications():
+    db = get_db()
+    ret = []
+    types = db.execute('SELECT id, name FROM equip_types').fetchall()
+    for type in types:
+        t = {'id': type['id'], 'name': type['name'], 'models': []}
+        models = db.execute('SELECT * from equip_models where equip_type_id = ?', (type['id'],)).fetchall()
+        for model in models:
+            m = {'num': model['model_num'], 'name': model['name'], 'sizes': None}
+            sizes = db.execute('SELECT * from equip_sizes where equip_type_id = ? and equip_model_num = ?', (type['id'], model['model_num'])).fetchall()
+            m['sizes'] = [{'desc': s['desc'], 'id': s['id']} for s in sizes]
+            t['models'].append(m)
+
+        ret.append(t)
+
+    return ret
+
+def get_equip_classifications_2():
+    db = get_db()
+    ret = []
+    results = db.execute(
+        'SELECT m.equip_type_id type_id, t.name type_name, m.model_num, m.name model_name, s.desc size FROM equip_types t'
+        ' JOIN equip_models m on m.equip_type_id = t.id'
+        ' LEFT JOIN equip_sizes s on s.equip_type_id = t.id and s.equip_model_num = m.model_num'
+        ' ORDER BY t.id, m.model_num'
+    ).fetchall()
+    print(results)
+
+    return results

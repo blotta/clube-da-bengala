@@ -1,0 +1,79 @@
+{% extends 'base.html' %}
+
+
+{% block header %}
+    <h1 class="my-3">{% block title %}Detalhes do Empréstimo{% endblock %}</h1>
+{% endblock %}
+
+
+{% block content %}
+<div class="my-5">
+    <div class="row">
+
+        <div class="col-md-6">
+
+            <div class="row mb-2 mb-2">
+                <div class="col-md-3">Código</div>
+                <div class="col-md-6">{{ e.id }}</div>
+            </div>
+            <div class="row mb-2">
+                <div class="col-md-3">Data Criação</div>
+                <div class="col-md-6">{{ e.created }}</div>
+            </div>
+            <div class="row mb-2">
+                <div class="col-md-3">Status</div>
+                <div class="col-md-6">{{ e.status }}</div>
+            </div>
+            <div class="row mb-2">
+                <div class="col-md-3">Solicitante</div>
+                <div class="col-md-6">{{ e.solicitante_name }}</div>
+            </div>
+            <div class="row mb-2">
+                <div class="col-md-3">Beneficiário</div>
+                <div class="col-md-6">{{ e.beneficiario_name }}</div>
+            </div>
+            <div class="row mb-2">
+                <div class="col-md-3">Período</div>
+                <div class="col-md-6">De {{ e.data_inicio }} até {{ e.data_fim }}</div>
+            </div>
+            <div class="row mb-2">
+                <div class="col-md-3">Motivo</div>
+                <div class="col-md-6">{{ e.motivo }}</div>
+            </div>
+            <div class="row mb-2">
+                <div class="col-md-3">Observações</div>
+                <div class="col-md-6">{{ e.obs }}</div>
+            </div>
+
+        </div>
+
+        <div class="col-md-6">
+            <div class="card text-dark bg-light">
+                <h5 class="card-header">Equipamento</h5>
+                <!-- <img src="" alt=""> -->
+
+                <div class="card-body">
+                    <div class="card-text">
+                        <div class="row mb-2">
+                            <div class="col-md-3">Tipo</div>
+                            <div class="col-md-6">{{ e.equip_type_name }}</div>
+                        </div>
+                        <div class="row mb-2">
+                            <div class="col-md-3">Modelo</div>
+                            <div class="col-md-6">{{ e.equip_model_name }}</div>
+                        </div>
+                        {% if e.equip_size_desc %}
+                        <div class="row mb-2">
+                            <div class="col-md-3">Tamanho</div>
+                            <div class="col-md-6">{{ e.equip_size_desc }}</div>
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+{% endblock%}
