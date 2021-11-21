@@ -53,32 +53,44 @@
             <div class="col-md-6">
                 <div class="card text-dark bg-light">
                     <h5 class="card-header">Equipamento</h5>
-                    <!-- <img src="" alt=""> -->
 
-                    <div class="card-body">
-                        <!-- <h3 class="card-title mb-3">Equipamento</h3> -->
-                        <div class="card-text">
-                            <div class="input-group mb-3">
-                                <label for="equip_type" class="input-group-text">Tipo</label>
-                                <select class="form-select" name="equip_type" id="equip_type" required>
-                                    <option value="">Selecione...</option>
-                                    {% for t in viewmodel.equip_classifications %}
-                                    <option value="{{ t.id }}">{{ t.name }}</option>
-                                    {% endfor %}
-                                </select>
-                            </div>
-                            <div class="input-group mb-3">
-                                <label for="equip_model" class="input-group-text">Modelo</label>
-                                <select class="form-select" name="equip_model" id="equip_model" required>
-                                </select>
-                            </div>
-                            <div class="input-group mb-3">
-                                <label for="equip_size" class="input-group-text">Tamanho</label>
-                                <select class="form-select" name="equip_size" id="equip_size">
-                                </select>
+                    <div class="row g-0">
+
+                        <div class="col-md-4">
+                            <!-- <img src="" alt=""> -->
+                            <img id="model_img" class="rounded w-100 m-2" src="" alt="Imagem do modelo">
+                        </div>
+
+                        <div class="col-md-8">
+
+                            <div class="card-body">
+                                <!-- <h3 class="card-title mb-3">Equipamento</h3> -->
+                                <div class="card-text">
+                                    <div class="input-group mb-3">
+                                        <label for="equip_type" class="input-group-text">Tipo</label>
+                                        <select class="form-select" name="equip_type" id="equip_type" required>
+                                            <option value="">Selecione...</option>
+                                            {% for t in viewmodel.equip_classifications %}
+                                            <option value="{{ t.id }}">{{ t.name }}</option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                    <div class="input-group mb-3">
+                                        <label for="equip_model" class="input-group-text">Modelo</label>
+                                        <select class="form-select" name="equip_model" id="equip_model" required>
+                                        </select>
+                                    </div>
+                                    <div class="input-group mb-3">
+                                        <label for="equip_size" class="input-group-text">Tamanho</label>
+                                        <select class="form-select" name="equip_size" id="equip_size">
+                                        </select>
+                                    </div>
+                                </div>
                             </div>
                         </div>
+
                     </div>
+
                 </div>
             </div>
 
@@ -95,12 +107,14 @@
 <script>
     window.estado = {
         // equips: {{ viewmodel.equip_classifications | tojson }},
-        equips: [{"id": 1, "models": [{"name": "Manual", "num": 1, "sizes": []}, {"name": "Motorizada", "num": 2, "sizes": []}], "name": "Cama Hospitalar"}, {"id": 2, "models": [{"name": "Standard Adulto", "num": 1, "sizes": []}, {"name": "Especial Adulto", "num": 2, "sizes": [{"desc": "At\u00e9 120kg", "id": 1}]}, {"name": "Adaptada Infantil", "num": 4, "sizes": []}], "name": "Cadeira de Rodas"}, {"id": 3, "models": [{"name": "Standard Adulto", "num": 1, "sizes": []}, {"name": "Especial Adulto", "num": 2, "sizes": []}], "name": "Cadeira de Banho"}, {"id": 4, "models": [{"name": "Articulado", "num": 1, "sizes": []}, {"name": "Especial Adulto", "num": 2, "sizes": []}, {"name": "Especial Infantil", "num": 4, "sizes": []}], "name": "Andador"}, {"id": 5, "models": [{"name": "Alum\u00ednio (par) Adulto", "num": 1, "sizes": [{"desc": "P - 1,37m a 1,57m", "id": 2}, {"desc": "M - 1,57m a 1,78m", "id": 3}, {"desc": "G - 1,78m a 1,98m", "id": 4}]}, {"name": "Madeira (par) Adulto", "num": 2, "sizes": [{"desc": "P - 1,37m a 1,57m", "id": 5}, {"desc": "M - 1,57m a 1,78m", "id": 6}, {"desc": "G - 1,78m a 1,98m", "id": 7}]}, {"name": "Alum\u00ednio (par) Infantil", "num": 3, "sizes": [{"desc": "\u00danico - Entre 1,22m e 1,37m", "id": 8}]}], "name": "Muleta Axilar"}, {"id": 6, "models": [{"name": "Par Adulto", "num": 3, "sizes": [{"desc": "P - 1,37m a 1,57m", "id": 9}, {"desc": "M - 1,57m a 1,78m", "id": 10}, {"desc": "G - 1,78m a 1,98m", "id": 11}]}, {"name": "Par Infantil", "num": 4, "sizes": []}], "name": "Muleta Canadense (de bra\u00e7o)"}, {"id": 7, "models": [{"name": "Fixo", "num": 1, "sizes": [{"desc": "P - 50cm", "id": 18}, {"desc": "M - 60cm", "id": 19}, {"desc": "G - 70cm", "id": 20}]}], "name": "Imobilizador de Joelho"}, {"id": 8, "models": [{"name": "Madeira", "num": 1, "sizes": []}, {"name": "Alum\u00ednio", "num": 2, "sizes": []}, {"name": "Deficiente Visual", "num": 3, "sizes": []}, {"name": "Quatro Pontos", "num": 4, "sizes": []}], "name": "Bengala"}, {"id": 9, "models": [{"name": "Robofoot Curta", "num": 1, "sizes": [{"desc": "P", "id": 12}, {"desc": "M", "id": 13}, {"desc": "G", "id": 14}]}, {"name": "Robofoot Longa", "num": 2, "sizes": [{"desc": "P", "id": 15}, {"desc": "M", "id": 16}, {"desc": "G", "id": 17}]}], "name": "Bota Imobilizadora"}, {"id": 15, "models": [{"name": "Padr\u00e3o", "num": 1, "sizes": []}], "name": "Tipoia"}, {"id": 18, "models": [{"name": "Espuma", "num": 1, "sizes": []}], "name": "Colar Cervical"}, {"id": 19, "models": [{"name": "Padr\u00e3o", "num": 1, "sizes": []}], "name": "Imobilizador P\u00e9 / Tornozelo"}, {"id": 20, "models": [{"name": "Caixa de Ovo", "num": 1, "sizes": []}], "name": "Colch\u00e3o"}, {"id": 27, "models": [{"name": "Padr\u00e3o", "num": 1, "sizes": []}], "name": "Joelheira"}],
+
+        equips: [{"id": 1, "models": [{"image": "/static/images/01-01.jpg", "name": "Manual", "num": 1, "sizes": []}, {"image": "/static/images/01-02.jpg", "name": "Motorizada", "num": 2, "sizes": []}], "name": "Cama Hospitalar"}, {"id": 2, "models": [{"image": "/static/images/02-01.jpg", "name": "Standard Adulto", "num": 1, "sizes": []}, {"image": "/static/images/02-02.jpg", "name": "Especial Adulto", "num": 2, "sizes": [{"desc": "At\u00e9 120kg", "id": 1}]}, {"image": "/static/images/02-04.jpg", "name": "Adaptada Infantil", "num": 4, "sizes": []}], "name": "Cadeira de Rodas"}, {"id": 3, "models": [{"image": "/static/images/03-01.jpg", "name": "Standard Adulto", "num": 1, "sizes": []}, {"image": "/static/images/03-02.jpg", "name": "Especial Adulto", "num": 2, "sizes": []}], "name": "Cadeira de Banho"}, {"id": 4, "models": [{"image": "/static/images/04-01.jpg", "name": "Articulado", "num": 1, "sizes": []}, {"image": "/static/images/04-02.jpg", "name": "Especial adulto", "num": 2, "sizes": []}, {"image": "/static/images/04-04.jpg", "name": "Especial Infantil", "num": 4, "sizes": []}], "name": "Andador"}, {"id": 5, "models": [{"image": "/static/images/05-01.jpg", "name": "Alum\u00ednio (par) Adulto", "num": 1, "sizes": [{"desc": "P - 1,37m a 1,57m", "id": 2}, {"desc": "M - 1,57m a 1,78m", "id": 3}, {"desc": "G - 1,78m a 1,98m", "id": 4}]}, {"image": "/static/images/05-02.jpg", "name": "Madeira (par) Adulto", "num": 2, "sizes": [{"desc": "P - 1,37m a 1,57m", "id": 5}, {"desc": "M - 1,57m a 1,78m", "id": 6}, {"desc": "G - 1,78m a 1,98m", "id": 7}]}, {"image": "/static/images/05-03.jpg", "name": "Alum\u00ednio (par) Infantil", "num": 3, "sizes": [{"desc": "\u00danico - Entre 1,22m e 1,37m", "id": 8}]}], "name": "Muleta Axilar"}, {"id": 6, "models": [{"image": "/static/images/06-03.jpg", "name": "Par Adulto", "num": 3, "sizes": [{"desc": "P - 1,37m a 1,57m", "id": 9}, {"desc": "M - 1,57m a 1,78m", "id": 10}, {"desc": "G - 1,78m a 1,98m", "id": 11}]}, {"image": "/static/images/06-04.jpg", "name": "Par Infantil", "num": 4, "sizes": []}], "name": "Muleta Canadense (de bra\u00e7o)"}, {"id": 7, "models": [{"image": "/static/images/07-00.jpg", "name": "Fixo", "num": 1, "sizes": [{"desc": "P - 50cm", "id": 18}, {"desc": "M - 60cm", "id": 19}, {"desc": "G - 70cm", "id": 20}]}], "name": "Imobilizador de Joelho"}, {"id": 8, "models": [{"image": "/static/images/08-00.jpg", "name": "Madeira", "num": 1, "sizes": []}, {"image": "/static/images/08-00.jpg", "name": "Alum\u00ednio", "num": 2, "sizes": []}, {"image": "/static/images/08-03.jpg", "name": "Deficiente Visual", "num": 3, "sizes": []}, {"image": "/static/images/08-04.jpg", "name": "Quatro Pontos", "num": 4, "sizes": []}], "name": "Bengala"}, {"id": 9, "models": [{"image": "/static/images/09-00.jpg", "name": "Robofoot Curta", "num": 1, "sizes": [{"desc": "P", "id": 12}, {"desc": "M", "id": 13}, {"desc": "G", "id": 14}]}, {"image": "/static/images/09-00.jpg", "name": "Robofoot Longa", "num": 2, "sizes": [{"desc": "P", "id": 15}, {"desc": "M", "id": 16}, {"desc": "G", "id": 17}]}], "name": "Bota Imobilizadora"}, {"id": 15, "models": [{"image": "/static/images/15-00.jpg", "name": "Padr\u00e3o", "num": 1, "sizes": []}], "name": "Tipoia"}, {"id": 18, "models": [{"image": "/static/images/18-00.jpg", "name": "Espuma", "num": 1, "sizes": []}], "name": "Colar Cervical"}, {"id": 19, "models": [{"image": "/static/images/19-00.jpg", "name": "Padr\u00e3o", "num": 1, "sizes": []}], "name": "Imobilizador P\u00e9 / Tornozelo"}, {"id": 20, "models": [{"image": "/static/images/20-00.jpg", "name": "Caixa de Ovo", "num": 1, "sizes": []}], "name": "Colch\u00e3o"}, {"id": 27, "models": [{"image": "/static/images/27-00.jpg", "name": "Padr\u00e3o", "num": 1, "sizes": []}], "name": "Joelheira"}],
 
         dateFormat: 'dd/mm/yy',
         init: function() {
             window.estado.configDatepicker();
             window.estado.configEquip();
+            window.estado.prefetchImages();
         },
 
         configEquip: function() {
@@ -108,6 +122,7 @@
                 if ($(this).val() == '') {
                     $("#equip_model").html('').closest('div').hide();
                     $("#equip_size").html('').closest('div').hide();
+                    $("#model_img").attr('src', '').css('display', 'block').hide();
                 } else {
                     window.estado.populateModels($(this).val());
                 }
@@ -115,6 +130,8 @@
 
             $('#equip_model').change(function() {
                 window.estado.populateSizes($('#equip_type').val(), $(this).val());
+                const img = $('#equip_model').find('option:selected').data('img');
+                $('#model_img').attr('src', img).show();
             });
 
             $("#equip_type").trigger('change');
@@ -124,7 +141,7 @@
             $('#equip_model').html('');
             const type = window.estado.equips.filter((t) => t.id == type_id)[0];
             for (model of type.models) {
-                $('#equip_model').append('<option value="'+model.num+'">'+model.name+'</option>');
+                $('#equip_model').append('<option data-img="'+model.image+'"" value="'+model.num+'">'+model.name+'</option>');
             }
             $('#equip_model').closest('div').show();
             $('#equip_model').trigger('change');
@@ -174,6 +191,28 @@
                 date = null;
             }
             return date;
+        },
+
+        prefetchImages: function() {
+            let hrefs = [];
+            for (type of window.estado.equips) {
+                for (model of type.models) {
+                    hrefs.push(model.image);
+                }
+            }
+            hrefs = $.unique(hrefs);
+            console.log(hrefs);
+            for (link of hrefs) {
+                const l = document.createElement('link');
+                l.rel = "prefetch";
+                l.href = link;
+                document.getElementsByTagName('head')[0].appendChild(l);
+
+                const lc = document.createElement('link');
+                lc.rel = "prerender";
+                lc.href = link;
+                document.getElementsByTagName('head')[0].appendChild(lc);
+            }
         }
     }
     $(document).ready(function() {

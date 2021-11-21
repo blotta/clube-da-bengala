@@ -64,6 +64,7 @@ def get_equipamentos(**filter):
             , et.name equip_type_name
             , em.model_num equip_model_num
             , em.name equip_model_name
+            , em.image equip_model_image
             , es.id equip_size_id
             , es.desc equip_size_desc
             , e.obs
@@ -140,6 +141,9 @@ def emprestimos_details(eid):
         #     WHERE e.equip_type = ? and e.equip_model = ?
         # """).fetchall()
         equipamentos = get_equipamentos(disponivel = True, equip_type = e['equip_type_id'], equip_model = e['equip_model_num'])
+
+        if len(equipamentos) == 0:
+            flash("Você não possuí equipamentos disponíveis deste modelo")
 
     return render_template('manage/emprestimos_details.html',
         e = e, can_approve_or_reject = can_approve_or_reject, equipamentos = equipamentos)

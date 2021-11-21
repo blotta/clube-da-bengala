@@ -47,6 +47,11 @@ def get_usuario(id):
     
     return u
 
+
+###############
+## ENDEREÇOS ##
+###############
+
 @bp.route('/usuario/<int:id>/addresses', methods=['GET', 'POST'])
 @login_required
 def addresses(id):
@@ -215,6 +220,7 @@ def get_emprestimos(**filter):
             , et.name equip_type_name
             , em.model_num equip_model_num
             , em.name equip_model_name
+            , em.image equip_model_image
             , es.id equip_size_id
             , es.desc equip_size_desc
         FROM emprestimos e
@@ -307,7 +313,7 @@ def get_equip_classifications():
         t = {'id': type['id'], 'name': type['name'], 'models': []}
         models = db.execute('SELECT * from equip_models where equip_type_id = ?', (type['id'],)).fetchall()
         for model in models:
-            m = {'num': model['model_num'], 'name': model['name'], 'sizes': None}
+            m = {'num': model['model_num'], 'name': model['name'], 'image': url_for('static', filename="images/" + model['image']), 'sizes': None}
             sizes = db.execute('SELECT * from equip_sizes where equip_type_id = ? and equip_model_num = ?', (type['id'], model['model_num'])).fetchall()
             m['sizes'] = [{'desc': s['desc'], 'id': s['id']} for s in sizes]
             t['models'].append(m)

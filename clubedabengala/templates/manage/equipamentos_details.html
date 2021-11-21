@@ -12,17 +12,17 @@
 
         <div class="col-md-6">
 
-            <div class="row mb-2 mb-2">
-                <div class="col-md-3">Código</div>
-                <div class="col-md-6">{{ e.id }}</div>
+            <div class="row mb-2">
+                <div class="col-md-4">Código</div>
+                <div class="col-md-8">{{ e.id }}</div>
             </div>
             <div class="row mb-2">
-                <div class="col-md-3">Status</div>
-                <div class="col-md-6">{{ e.status }}</div>
+                <div class="col-md-4">Status</div>
+                <div class="col-md-8">{{ e.status }}</div>
             </div>
             <div class="row mb-2">
-                <div class="col-md-3">Observações</div>
-                <div class="col-md-6">{{ e.obs }}</div>
+                <div class="col-md-4">Observações</div>
+                <div class="col-md-8">{{ e.obs }}</div>
             </div>
 
         </div>
@@ -30,25 +30,36 @@
         <div class="col-md-6">
             <div class="card text-dark bg-light">
                 <h5 class="card-header">Classificação</h5>
-                <!-- <img src="" alt=""> -->
 
-                <div class="card-body">
-                    <div class="card-text">
-                        <div class="row mb-2">
-                            <div class="col-md-3">Tipo</div>
-                            <div class="col-md-6">{{ e.equip_type_name }}</div>
-                        </div>
-                        <div class="row mb-2">
-                            <div class="col-md-3">Modelo</div>
-                            <div class="col-md-6">{{ e.equip_model_name }}</div>
-                        </div>
-                        {% if e.equip_size_desc %}
-                        <div class="row mb-2">
-                            <div class="col-md-3">Tamanho</div>
-                            <div class="col-md-6">{{ e.equip_size_desc }}</div>
-                        </div>
-                        {% endif %}
+                <div class="row g-0">
+
+                    <div class="col-md-4">
+                        <img class="rounded w-100 m-2" src="{{ url_for('static', filename='images/' + e.equip_model_image )}}" alt="">
                     </div>
+
+                    <div class="col-md-8">
+
+                        <div class="card-body">
+                            <div class="card-text">
+                                <div class="row mb-2">
+                                    <div class="col-md-3">Tipo</div>
+                                    <div class="col-md-6">{{ e.equip_type_name }}</div>
+                                </div>
+                                <div class="row mb-2">
+                                    <div class="col-md-3">Modelo</div>
+                                    <div class="col-md-6">{{ e.equip_model_name }}</div>
+                                </div>
+                                {% if e.equip_size_desc %}
+                                <div class="row mb-2">
+                                    <div class="col-md-3">Tamanho</div>
+                                    <div class="col-md-6">{{ e.equip_size_desc }}</div>
+                                </div>
+                                {% endif %}
+                            </div>
+                        </div>
+
+                    </div>
+
                 </div>
             </div>
 

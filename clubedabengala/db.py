@@ -45,7 +45,7 @@ def populate_db():
     db.execute(
         'INSERT INTO addresses (user_id, zipcode, street, number, complement, city, state, active)'
         ' VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
-        (2, '05652000', 'Av Roberto Marinho', 521, 'C3', 'São Paulo', 'SP', 1),
+        (2, '05652000', 'Av Roberto Marinho', 5219, 'C3', 'São Paulo', 'SP', 1),
     )
     # db.execute( "INSERT INTO user_roles (user_id, role_id) VALUES (2, 0)")
 
