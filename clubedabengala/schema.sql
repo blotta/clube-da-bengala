@@ -8,6 +8,7 @@ DROP TABLE IF EXISTS roles;
 DROP TABLE IF EXISTS equip_sizes;
 DROP TABLE IF EXISTS equip_models;
 DROP TABLE IF EXISTS equip_types;
+DROP TABLE IF EXISTS equipamentos_status;
 DROP TABLE IF EXISTS equipamentos;
 
 DROP TABLE IF EXISTS emprestimos_status;
@@ -174,6 +175,35 @@ INSERT INTO equip_sizes (equip_type_id, equip_model_num, desc) VALUES
   , (7, 1, 'G - 70cm');
 
 
+
+
+CREATE TABLE equipamentos_status (
+  id INTEGER PRIMARY KEY,
+  name TEXT NOT NULL
+);
+
+INSERT INTO equipamentos_status (id, name) VALUES
+    (0, 'Disponível')
+  , (1, 'Emprestado')
+  , (2, 'Em Manutenção')
+  , (3, 'Indisponível')
+  , (4, 'Reservado');
+
+CREATE TABLE equipamentos (
+  id INTEGER PRIMARY KEY,
+  status INTEGER NOT NULL,
+  equip_type INTEGER NOT NULL,
+  equip_model INTEGER NOT NULL,
+  equip_size INTEGER NULL,
+  obs TEXT NULL,
+
+  FOREIGN KEY (equip_type, equip_model) REFERENCES equip_models (equip_type_id, equip_model_num)
+);
+
+-----------------
+-- EMPRESTIMOS --
+-----------------
+
 CREATE TABLE emprestimos_status (
   id INTEGER PRIMARY KEY,
   status TEXT UNIQUE NOT NULL
@@ -186,12 +216,14 @@ INSERT INTO emprestimos_status (id, status) VALUES
   , (3, 'Cancelado')
   , (4, 'Emprestado');
 
+
 CREATE TABLE emprestimos (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
   created TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   status INTEGER NOT NULL,
   solicitante_id INTEGER NOT NULL,
   beneficiario_id INTEGER NOT NULL,
+  address_id INTEGER NOT NULL,
   data_inicio DATE NOT NULL,
   data_fim DATE NOT NULL,
   motivo TEXT NOT NULL,
@@ -199,10 +231,13 @@ CREATE TABLE emprestimos (
   equip_type INTEGER NOT NULL,
   equip_model INTEGER NOT NULL,
   equip_size INTEGER NULL,
+  equip_id INTEGER NULL,
 
   FOREIGN KEY (solicitante_id) REFERENCES users (id),
   FOREIGN KEY (beneficiario_id) REFERENCES beneficiarios (id),
+  FOREIGN KEY (address_id) REFERENCES addresses (id),
   FOREIGN KEY (status) REFERENCES emprestimos_status (id)
+  FOREIGN KEY (equip_id) REFERENCES equipamentos (id)
   FOREIGN KEY (equip_type, equip_model) REFERENCES equip_models (equip_type_id, equip_model_num)
 );
 

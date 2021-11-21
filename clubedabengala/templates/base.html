@@ -30,35 +30,39 @@
             <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav">
                 <li class="nav-item">
-                <a class="nav-link active" aria-current="page" href="#">Quem Somos</a>
+                    <a class="nav-link active" aria-current="page" href="#">Quem Somos</a>
                 </li>
                 {% if g.user %}
-                <li class="nav-item">
-                <a class="nav-link" href="{{ url_for('emprestimos.index') }}">Empréstimos</a>
-                </li>
                     {% if "Colaborador" in g.roles %}
                 <li class="nav-item">
-                <a class="nav-link" href="#">Equipamentos</a>
+                    <a class="nav-link" href="{{ url_for('manage.emprestimos') }}">Empréstimos</a>
                 </li>
                 <li class="nav-item">
-                <a class="nav-link" href="#">Usuários</a>
+                    <a class="nav-link" href="{{ url_for('manage.equipamentos') }}">Equipamentos</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#">Usuários</a>
+                </li>
+                    {% else %}
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ url_for('usuario.emprestimos', id = g.user['id']) }}">Empréstimos</a>
                 </li>
                     {% endif %}
                 <li class="nav-item">
-                <a class="nav-link" href="{{ url_for('auth.logout') }}">Logout</a>
+                    <a class="nav-link" href="{{ url_for('auth.logout') }}">Logout</a>
                 </li>
                 <li class="nav-item">
-                <a class="nav-link"  href="{{ url_for('usuario.details', id = g.user['id']) }}">{{ g.user['username'] }}</a>
+                    <a class="nav-link"  href="{{ url_for('usuario.details', id = g.user['id']) }}">{{ g.user['username'] }}</a>
                 </li>
                 <li class="nav-item">
-                <a class="nav-link disabled" href="">({{ g.roles | join(',') }})</a>
+                    <a class="nav-link disabled" href="">({{ g.roles | join(',') }})</a>
                 </li>
                 {% else %}
                 <li class="nav-item">
-                <a class="nav-link" href="{{ url_for('auth.login') }}">Login</a>
+                    <a class="nav-link" href="{{ url_for('auth.login') }}">Login</a>
                 </li>
                 <li class="nav-item">
-                <a class="nav-link" href="{{ url_for('auth.register') }}">Cadastro</a>
+                    <a class="nav-link" href="{{ url_for('auth.register') }}">Cadastro</a>
                 </li>
                 {% endif %}
             </ul>

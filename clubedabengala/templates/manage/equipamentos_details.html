@@ -2,7 +2,7 @@
 
 
 {% block header %}
-    <h1 class="my-3">{% block title %}Detalhes do Empréstimo{% endblock %}</h1>
+    <h1 class="my-3">{% block title %}Detalhes do Equipamento{% endblock %}</h1>
 {% endblock %}
 
 
@@ -17,32 +17,8 @@
                 <div class="col-md-6">{{ e.id }}</div>
             </div>
             <div class="row mb-2">
-                <div class="col-md-3">Data Criação</div>
-                <div class="col-md-6">{{ e.created }}</div>
-            </div>
-            <div class="row mb-2">
                 <div class="col-md-3">Status</div>
                 <div class="col-md-6">{{ e.status }}</div>
-            </div>
-            <div class="row mb-2">
-                <div class="col-md-3">Solicitante</div>
-                <div class="col-md-6">{{ e.solicitante_name }}</div>
-            </div>
-            <div class="row mb-2">
-                <div class="col-md-3">Beneficiário</div>
-                <div class="col-md-6">{{ e.beneficiario_name }}</div>
-            </div>
-            <div class="row mb-2">
-                <div class="col-md-3">Endereço</div>
-                <div class="col-md-6">{{ e.address }}</div>
-            </div>
-            <div class="row mb-2">
-                <div class="col-md-3">Período</div>
-                <div class="col-md-6">De {{ e.data_inicio }} até {{ e.data_fim }}</div>
-            </div>
-            <div class="row mb-2">
-                <div class="col-md-3">Motivo</div>
-                <div class="col-md-6">{{ e.motivo }}</div>
             </div>
             <div class="row mb-2">
                 <div class="col-md-3">Observações</div>
@@ -53,7 +29,7 @@
 
         <div class="col-md-6">
             <div class="card text-dark bg-light">
-                <h5 class="card-header">Equipamento</h5>
+                <h5 class="card-header">Classificação</h5>
                 <!-- <img src="" alt=""> -->
 
                 <div class="card-body">

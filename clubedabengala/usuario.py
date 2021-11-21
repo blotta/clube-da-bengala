@@ -124,12 +124,7 @@ def beneficiarios(id):
             )
             db.commit()
     
-    beneficiarios = db.execute(
-        "SELECT b.id, b.name, strftime('%d-%m-%Y', b.dataNascimento) dataNascimento, b.altura, b.peso, b.nrCalcado"
-        ' FROM beneficiarios b'
-        ' WHERE b.responsavel_id = ? and b.active = 1',
-        (id,)
-    ).fetchall()
+    beneficiarios = get_beneficiarios(uid = id)
     return render_template('usuario/beneficiarios.html', beneficiarios = beneficiarios)
 
 @bp.route('/usuario/<int:id>/beneficiarios/<int:bid>/remove', methods=['GET', 'POST'])
@@ -139,6 +134,45 @@ def beneficiarios_remove(id, bid):
     db.execute( 'UPDATE beneficiarios set active = 0 where id = ?', (bid, ))
     db.commit()
     return redirect(url_for('usuario.beneficiarios', id = id))
+
+
+def get_beneficiarios(**filter):
+    query = """
+        SELECT
+            b.id
+            , b.name
+            , strftime('%d-%m-%Y', b.dataNascimento) dataNascimento
+            , b.altura
+            , b.peso
+            , b.nrCalcado
+        FROM beneficiarios b
+    """
+    filter_query = []
+    params = []
+
+    filter['active'] = 1
+
+    if 'uid' in filter:
+        filter_query.append('b.responsavel_id = ?')
+        params.append(filter['uid'])
+
+    if 'active' in filter:
+        filter_query.append('b.active = ?')
+        params.append(filter['active'])
+
+    if len(filter_query) > 0:
+        query += ' WHERE ' + " AND ".join(filter_query)
+
+    return get_db().execute(query, tuple(params)).fetchall()
+    
+
+# @bp.route('/usuario/<int:id>/becomebeneficiario', methods=['GET', 'POST'])
+# @login_required
+# def become_beneficiario(id):
+#     pass
+
+
+
 
 
 ###############
@@ -165,11 +199,14 @@ def get_emprestimos(**filter):
         SELECT
             e.id
             , e.created
+            , est.id status_id
             , est.status
             , u.id solicitante_id
             , u.name solicitante_name
             , b.id beneficiario_id
             , b.name beneficiario_name
+            , a.id address_id
+            , a.street || ' ' || cast(a.number as varchar) || ' ' || a.complement || ' - ' || a.city || ' ' || a.state address
             , strftime('%d/%m/%Y', e.data_inicio) data_inicio
             , strftime('%d/%m/%Y', e.data_fim) data_fim
             , e.motivo
@@ -184,6 +221,7 @@ def get_emprestimos(**filter):
         JOIN emprestimos_status est on est.id = e.status
         JOIN users u on u.id = e.solicitante_id
         JOIN beneficiarios b on b.id = e.beneficiario_id
+        JOIN addresses a on a.id = e.address_id
         JOIN equip_types et on et.id = e.equip_type
         JOIN equip_models em on em.model_num = e.equip_model and em.equip_type_id = et.id
         LEFT JOIN equip_sizes es on es.id = e.equip_size
@@ -222,12 +260,11 @@ def emprestimos_create(id):
         equip_size = request.form.get('equip_size')
         result = db.execute(
             'INSERT INTO emprestimos'
-            ' (status, solicitante_id, beneficiario_id, data_inicio, data_fim, motivo, obs, equip_type, equip_model, equip_size)'
-            ' VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
-            (0, id, beneficiario_id, dataInicio, dataFim, motivo, obs, equip_type, equip_model, equip_size)
+            ' (status, solicitante_id, beneficiario_id, address_id, data_inicio, data_fim, motivo, obs, equip_type, equip_model, equip_size)'
+            ' VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+            (0, id, beneficiario_id, address_id, dataInicio, dataFim, motivo, obs, equip_type, equip_model, equip_size)
         )
         db.commit()
-        print("EEEEEEEIIIIII" + str(result.lastrowid))
         return redirect(url_for('usuario.emprestimos_details', id = id, eid = result.lastrowid))
 
 
@@ -291,3 +328,4 @@ def get_equip_classifications_2():
     print(results)
 
     return results
+

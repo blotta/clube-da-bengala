@@ -35,12 +35,12 @@ def create_app(test_config=None):
     from . import auth
     app.register_blueprint(auth.bp)
 
-    from . import emprestimos
-    app.register_blueprint(emprestimos.bp)
+    # from . import emprestimos
+    # app.register_blueprint(emprestimos.bp)
     # app.add_url_rule('/', endpoint="index")
 
-    # from . import solicitacoes
-    # app.register_blueprint(solicitacoes.bp)
+    from . import manage
+    app.register_blueprint(manage.bp)
 
     from . import usuario
     app.register_blueprint(usuario.bp)
@@ -52,7 +52,7 @@ def create_app(test_config=None):
             return redirect(url_for('auth.login'))
 
         if auth.user_in_role("Colaborador"):
-            return redirect(url_for('emprestimos.index'))
+            return redirect(url_for('manage.emprestimos'))
         
         app.logger.debug("Benefic")
         return redirect(url_for('usuario.details', id = uid))

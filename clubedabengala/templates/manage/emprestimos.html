@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+
+
+{% block header %}
+    <h1 class="text-center my-3">{% block title %}Empréstimos{% endblock %}</h1>
+{% endblock %}
+
+
+{% block content %}
+<a href="{{ url_for('manage.emprestimos') }}">Nova solicitação</a>
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th scope="col">#</th>
+            <th scope="col">Criado</th>
+            <th scope="col">Status</th>
+            <th scope="col">Solicitante</th>
+            <th scope="col">Beneficiário</th>
+            <th scope="col">Equipamento</th>
+            <th scope="col"></th>
+        </tr>
+    </thead>
+    <tbody>
+
+{% for e in emprestimos %}
+        <tr>
+            <th scope="row">{{ e.id }}</th>
+            <td>{{ e.created }}</td>
+            <td>{{ e.status }}</td>
+            <td>{{ e.solicitante_name }}</td>
+            <td>{{ e.beneficiario_name }}</td>
+            <td><a href="{{ url_for('manage.emprestimos_details', eid = e.id) }}">Detalhes</a></td>
+        </tr>
+{% endfor%}
+
+    </tbody>
+
+</table>
+{% endblock%}

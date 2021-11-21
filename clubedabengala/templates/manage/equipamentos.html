@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+
+
+{% block header %}
+    <h1 class="text-center my-3">{% block title %}Equipamentos{% endblock %}</h1>
+{% endblock %}
+
+
+{% block content %}
+<a href="{{ url_for('manage.equipamentos_create') }}" class="btn btn-secondary">Novo Equipamento</a>
+<div class="my-5 row">
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th scope="col">#</th>
+                <th scope="col">Status</th>
+                <th scope="col">Tipo</th>
+                <th scope="col">Modelo</th>
+                <th scope="col">Tamanho</th>
+                <th scope="col">Ações</th>
+            </tr>
+        </thead>
+        <tbody>
+
+    {% for e in equipamentos %}
+            <tr>
+                <th scope="row">{{ e.id }}</th>
+                <td>{{ e.status }}</td>
+                <td>{{ e.equip_type_name }}</td>
+                <td>{{ e.equip_model_name }}</td>
+                <td>{% if e.equip_size_desc %}{{ e.equip_size_desc }}{% endif %}</td>
+                <td><a href="{{ url_for('manage.equipamentos_details', eid = e.id) }}">Detalhes</a></td>
+            </tr>
+    {% endfor%}
+
+        </tbody>
+
+    </table>
+</div>
+{% endblock%}

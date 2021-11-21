@@ -1,0 +1,207 @@
+{% extends 'base.html' %}
+
+
+{% block header %}
+    <h1 class="my-3">{% block title %}Detalhes do Empréstimo{% endblock %}</h1>
+{% endblock %}
+
+
+{% block content %}
+<div class="my-5">
+    <div class="row">
+
+        <div class="col-md-6">
+
+            <div class="row mb-2 mb-2">
+                <div class="col-md-3">Código</div>
+                <div class="col-md-6">{{ e.id }}</div>
+            </div>
+            <div class="row mb-2">
+                <div class="col-md-3">Data Criação</div>
+                <div class="col-md-6">{{ e.created }}</div>
+            </div>
+            <div class="row mb-2">
+                <div class="col-md-3">Status</div>
+                <div class="col-md-6">{{ e.status }}</div>
+            </div>
+            <div class="row mb-2">
+                <div class="col-md-3">Solicitante</div>
+                <div class="col-md-6">{{ e.solicitante_name }}</div>
+            </div>
+            <div class="row mb-2">
+                <div class="col-md-3">Beneficiário</div>
+                <div class="col-md-6">{{ e.beneficiario_name }}</div>
+            </div>
+            <div class="row mb-2">
+                <div class="col-md-3">Endereço</div>
+                <div class="col-md-6">{{ e.address }}</div>
+            </div>
+            <div class="row mb-2">
+                <div class="col-md-3">Período</div>
+                <div class="col-md-6">De {{ e.data_inicio }} até {{ e.data_fim }}</div>
+            </div>
+            <div class="row mb-2">
+                <div class="col-md-3">Motivo</div>
+                <div class="col-md-6">{{ e.motivo }}</div>
+            </div>
+            <div class="row mb-2">
+                <div class="col-md-3">Observações</div>
+                <div class="col-md-6">{{ e.obs }}</div>
+            </div>
+
+        </div>
+
+        <div class="col-md-6">
+            <div class="card text-dark bg-light mb-3">
+                <h5 class="card-header">Classificação</h5>
+                <!-- <img src="" alt=""> -->
+
+                <div class="card-body">
+                    <div class="card-text">
+                        <div class="row mb-2">
+                            <div class="col-md-3">Tipo</div>
+                            <div class="col-md-6">{{ e.equip_type_name }}</div>
+                        </div>
+                        <div class="row mb-2">
+                            <div class="col-md-3">Modelo</div>
+                            <div class="col-md-6">{{ e.equip_model_name }}</div>
+                        </div>
+                        {% if e.equip_size_desc %}
+                        <div class="row mb-2">
+                            <div class="col-md-3">Tamanho</div>
+                            <div class="col-md-6">{{ e.equip_size_desc }}</div>
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+
+            </div>
+
+            {% if can_approve_or_reject %}
+            <div class="card text-dark bg-light">
+                <h5 class="card-header">Equipamentos Disponíveis</h5>
+                <!-- <img src="" alt=""> -->
+
+                <div class="card-body">
+                    <form action="{{ url_for('manage.emprestimos_approve', eid = e.id) }}" method="post">
+                        <div class="card-text">
+                            <div class="row mb-2 hiddeable">
+                                <div class="col-md-12">
+                                    <select name="equip_id" id="equip_id" class="form-select">
+                                        <option value="">Selecione...</option>
+                                        {% for e in equipamentos %}
+                                        <option data-obs="{{ e.obs }}" value="{{ e.id }}">({{ e.id }}) {{ e.equip_type_name }} {{ e.equip_model_name }} {% if e.equip_size_desc %} - {{ e.equip_size_desc }}{% endif %}</option>
+                                        {% endfor%}
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="row mb-2 hiddeable">
+                                <div class="col-md-12">
+                                    <div class="card mb-3">
+                                        <div class="row g-0">
+                                            <div class="col-md-4">
+                                                <img src="{{ url_for('static', filename='/images/imobilizador-joelho.jpg') }}" class="card-img-top" alt="">
+                                            </div>
+                                            <div class="col-md-8">
+                                                <div class="card-body" id="equip_obs">
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row hiddeable">
+                                <div class="col-md-6">
+                                    <select class="form-select" name="approved" id="approved">
+                                        <option value="">Selecione...</option>
+                                        <option disabled id="approve-option" value="true"><span class="text-success">Aprovar</span></option>
+                                        <option value="false"><span class="text-danger">Rejeitar</span></option>
+                                    </select>
+                                </div>
+                                <div class="col-md-6">
+                                    <button id="approve-submit" type="submit" class="btn btn-primary w-100">Salvar</button>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+
+            </div>
+            {% endif %}
+        </div>
+    </div>
+
+</div>
+
+<script>
+    window.estado = {
+        init: function() {
+            $('#equip_id').change(function() {
+                $('#equip_obs').html('');
+                $('#equip_obs').closest('div.hiddeable').hide();
+                // $('#approved').closest('div.hiddeable').hide();
+                $('#approved').val('');
+                $('#approve-option').prop('disabled', true);
+
+                if ($(this).val() != '') {
+                    console.log("equip_id change triggered")
+                    $('#equip_obs').html($(this).find('option:selected').data('obs'));
+                    $('#equip_obs').closest('div.hiddeable').show();
+                    $('#approved').closest('div.hiddeable').show();
+                    $('#approve-option').prop('disabled', false);
+                }
+
+                window.estado.checkCanApprove();
+                window.estado.checkSubmit();
+            });
+
+            $('#approved').change(function() {
+                const approved_select = $(this).val();
+                console.log(approved_select);
+                if (approved_select != '') {
+                    if (approved_select == "false") {
+                        $('#equip_id').val('').closest('div.hiddeable').hide();
+                        $('#equip_obs').html('').closest('div.hiddeable').hide();
+                        $('#approve-option').prop('disabled', true);
+                    } else if (approved_select == "true" && $('#equip_id').val() != '') {
+                        $('#equip_id').closest('div.hiddeable').show();
+                        $('#equip_obs').closest('div.hiddeable').show();
+                    }
+                } else {
+                    $('#equip_id').closest('div.hiddeable').show();
+                }
+
+                window.estado.checkCanApprove();
+                window.estado.checkSubmit();
+            });
+
+            $('#equip_id').trigger('change');
+        },
+        checkCanApprove: function() {
+            const equip_has_val = $('#equip_id').val();
+            if (equip_has_val) {
+                $('#approve-option').prop('disabled', false);
+            } else {
+                $('#approve-option').prop('disabled', true);
+            }
+        },
+
+        checkSubmit: function() {
+            const equip = $('#equip_id').val();
+            const approved = $('#approved').val();
+
+            if ( (approved == "true" && equip != '') || (approved == "false" && equip == ''))
+            {
+                $('#approve-submit').prop('disabled', false);
+            } else {
+                $('#approve-submit').prop('disabled', true);
+            }
+
+        }
+    }
+    $(document).ready(function() {
+        window.estado.init();
+    })
+</script>
+
+{% endblock%}

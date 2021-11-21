@@ -73,7 +73,7 @@ def login():
             roles = get_user_roles(user['id'])
             session['roles'] = roles
             if "Colaborador" in roles:
-                return redirect(url_for('emprestimos.index'))
+                return redirect(url_for('manage.emprestimos'))
             return redirect(url_for('usuario.details', id = user['id']))
 
         flash(error)
