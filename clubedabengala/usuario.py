@@ -223,6 +223,7 @@ def get_emprestimos(**filter):
             , em.image equip_model_image
             , es.id equip_size_id
             , es.desc equip_size_desc
+            , e.equip_id
         FROM emprestimos e
         JOIN emprestimos_status est on est.id = e.status
         JOIN users u on u.id = e.solicitante_id

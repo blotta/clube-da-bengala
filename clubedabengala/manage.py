@@ -129,25 +129,29 @@ def emprestimos_details(eid):
     e = get_emprestimos(eid = eid)[0]
 
     equipamentos = []
-    flags = {}
+    viewmodel = {}
     # can_approve_or_reject = False
     if e['status_id'] == 0:
-        flags['can_approve_or_reject'] = True
+        viewmodel['can_approve_or_reject'] = True
         # can_approve_or_reject = True
         equipamentos = get_equipamentos(disponivel = True, equip_type = e['equip_type_id'], equip_model = e['equip_model_num'])
 
         if len(equipamentos) == 0:
             flash("Você não possuí equipamentos disponíveis deste modelo")
-    elif e['status_id'] == 1:
-        flags['can_mark_as_retirado'] = True
+    elif e['status_id'] in [1, 4, 3, 5]:
+        # aprovado, emprestado, cancelado ou finalizado
+        viewmodel['can_mark_as_retirado'] = e['status_id'] == 1
+        viewmodel['can_mark_as_finalizado'] = e['status_id'] == 4
+        viewmodel['equipamento'] = get_equipamentos(eid = e['equip_id'])[0]
 
     return render_template('manage/emprestimos_details.html',
-        e = e, equipamentos = equipamentos, **flags)
+        e = e, equipamentos = equipamentos, **viewmodel)
 
 
 @bp.route('/emprestimos/<int:eid>/approve', methods = ["POST"])
 @login_required
 def emprestimos_approve(eid):
+    abort_if_not_in_role("Colaborador")
     db = get_db()
     equip_id = request.form.get('equip_id')
     emprestimo_status = 2 # negado
@@ -168,6 +172,7 @@ def emprestimos_approve(eid):
 @bp.route('/emprestimos/<int:eid>/withdrawalled', methods = ["POST"])
 @login_required
 def emprestimos_withdrawalled(eid):
+    abort_if_not_in_role("Colaborador")
     db = get_db()
 
     emprestimo_status = 4 # emprestado
@@ -175,6 +180,23 @@ def emprestimos_withdrawalled(eid):
 
     equip_id = db.execute('Select equip_id from emprestimos where id = ?', (eid,)).fetchone()[0]
     equip_status = 1 # emprestado
+    print(equip_status, equip_id)
+    db.execute('UPDATE equipamentos set status = ? where id = ?', (equip_status, equip_id))
+    db.commit()
+
+    return redirect(url_for('manage.emprestimos_details', eid = eid))
+
+@bp.route('/emprestimos/<int:eid>/finalized', methods = ["POST"])
+@login_required
+def emprestimos_finalized(eid):
+    abort_if_not_in_role("Colaborador")
+    db = get_db()
+
+    emprestimo_status = 5 # finalizado
+    db.execute('UPDATE emprestimos set status = ? where id = ?', (emprestimo_status, eid))
+
+    equip_id = db.execute('Select equip_id from emprestimos where id = ?', (eid,)).fetchone()[0]
+    equip_status = 0 # disponivel
     print(equip_status, equip_id)
     db.execute('UPDATE equipamentos set status = ? where id = ?', (equip_status, equip_id))
     db.commit()
