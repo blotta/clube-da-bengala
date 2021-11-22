@@ -33,24 +33,25 @@ def init_db():
 def populate_db():
     db = get_db()
     db.execute(
-        "INSERT INTO users (id, username, password, name, mobilenumber, email) VALUES (?, ?, ?, ?, ?, ?)",
-        (1, 'lucas', generate_password_hash('123'), "Lucas Blotta", '11996786683', 'lucas@example.com'),
+        'INSERT INTO users (id, username, password, name, mobilenumber, email) VALUES'
+        '   (?, ?, ?, ?, ?, ?)'
+        ' , (?, ?, ?, ?, ?, ?)',
+        (1, 'lucas', generate_password_hash('123'), "Lucas Blotta", '11996786683', 'lucas@example.com',
+         2, 'roy', generate_password_hash('123'), "Roy Raynalds", '11996786684', 'roy@example.com')
     )
-    db.execute( "INSERT INTO user_roles (user_id, role_id) VALUES (1, 0)") # Colaborador
+    with current_app.open_resource('populate.sql') as f:
+        db.executescript(f.read().decode('utf8'))
+    # db.execute( "INSERT INTO user_roles (user_id, role_id) VALUES (1, 0)") # Colaborador
 
-    db.execute(
-        "INSERT INTO users (id, username, password, name, mobilenumber, email) VALUES (?, ?, ?, ?, ?, ?)",
-        (2, 'roy', generate_password_hash('123'), "Roy Raynalds", '11996786684', 'roy@example.com'),
-    )
-    db.execute(
-        'INSERT INTO addresses (user_id, zipcode, street, number, complement, city, state, active)'
-        ' VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
-        (2, '05652000', 'Av Roberto Marinho', 5219, 'C3', 'São Paulo', 'SP', 1),
-    )
-    # db.execute( "INSERT INTO user_roles (user_id, role_id) VALUES (2, 0)")
-
-    # db.execute( "INSERT INTO solicitacoes (status, solicitante_id) VALUES (0, 1)")
-    # db.execute( "INSERT INTO emprestimos (status, dest_user_id) VALUES (0, 1)")
+    # db.execute(
+    #     "INSERT INTO users (id, username, password, name, mobilenumber, email) VALUES (?, ?, ?, ?, ?, ?)",
+    #     (2, 'roy', generate_password_hash('123'), "Roy Raynalds", '11996786684', 'roy@example.com'),
+    # )
+    # db.execute(
+    #     'INSERT INTO addresses (user_id, zipcode, street, number, complement, city, state, active)'
+    #     ' VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
+    #     (2, '05652000', 'Av Roberto Marinho', 5219, 'C3', 'São Paulo', 'SP', 1),
+    # )
     db.commit()
 
 @click.command('init-db')

@@ -129,24 +129,20 @@ def emprestimos_details(eid):
     e = get_emprestimos(eid = eid)[0]
 
     equipamentos = []
-    can_approve_or_reject = False
+    flags = {}
+    # can_approve_or_reject = False
     if e['status_id'] == 0:
-        can_approve_or_reject = True
-        # equipamentos = get_db().execute("""
-        #     SELECT
-        #         e.id
-        #         , e.obs
-        #         , e.equip_size
-        #     FROM equipamentos e
-        #     WHERE e.equip_type = ? and e.equip_model = ?
-        # """).fetchall()
+        flags['can_approve_or_reject'] = True
+        # can_approve_or_reject = True
         equipamentos = get_equipamentos(disponivel = True, equip_type = e['equip_type_id'], equip_model = e['equip_model_num'])
 
         if len(equipamentos) == 0:
             flash("Você não possuí equipamentos disponíveis deste modelo")
+    elif e['status_id'] == 1:
+        flags['can_mark_as_retirado'] = True
 
     return render_template('manage/emprestimos_details.html',
-        e = e, can_approve_or_reject = can_approve_or_reject, equipamentos = equipamentos)
+        e = e, equipamentos = equipamentos, **flags)
 
 
 @bp.route('/emprestimos/<int:eid>/approve', methods = ["POST"])
@@ -165,6 +161,22 @@ def emprestimos_approve(eid):
         equip_status = 4 # reservado
         db.execute('UPDATE equipamentos set status = ? where id = ?', (equip_status, equip_id))
 
+    db.commit()
+
+    return redirect(url_for('manage.emprestimos_details', eid = eid))
+
+@bp.route('/emprestimos/<int:eid>/withdrawalled', methods = ["POST"])
+@login_required
+def emprestimos_withdrawalled(eid):
+    db = get_db()
+
+    emprestimo_status = 4 # emprestado
+    db.execute('UPDATE emprestimos set status = ? where id = ?', (emprestimo_status, eid))
+
+    equip_id = db.execute('Select equip_id from emprestimos where id = ?', (eid,)).fetchone()[0]
+    equip_status = 1 # emprestado
+    print(equip_status, equip_id)
+    db.execute('UPDATE equipamentos set status = ? where id = ?', (equip_status, equip_id))
     db.commit()
 
     return redirect(url_for('manage.emprestimos_details', eid = eid))

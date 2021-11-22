@@ -7,7 +7,7 @@
 
 
 {% block content %}
-<a href="{{ url_for('usuario.emprestimos_create', id = g.user['id']) }}">Nova solicitação</a>
+<a role="btn" class="btn btn-secondary" href="{{ url_for('usuario.emprestimos_create', id = g.user['id']) }}">Nova solicitação</a>
 <table class="table table-striped">
     <thead>
         <tr>

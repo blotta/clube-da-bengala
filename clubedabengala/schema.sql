@@ -244,7 +244,8 @@ INSERT INTO emprestimos_status (id, status) VALUES
   , (1, 'Aprovado')
   , (2, 'Negado')
   , (3, 'Cancelado')
-  , (4, 'Emprestado');
+  , (4, 'Emprestado')
+  , (5, 'Finalizado');
 
 
 CREATE TABLE emprestimos (

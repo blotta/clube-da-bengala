@@ -49,6 +49,17 @@
                 <div class="col-md-6">{{ e.obs }}</div>
             </div>
 
+            {% if can_mark_as_retirado %}
+            <div class="row mb-2">
+                <div class="col-md-6">
+                    <form action="{{ url_for('manage.emprestimos_withdrawalled', eid = e.id) }}" method="post">
+                        <!-- <input type="hidden" name="equip_id" value="{{ equip_id }}"> -->
+                        <button class="btn btn-secondary" type="submit">Marcar como retirado</button>
+                    </form>
+                </div>
+            </div>
+            {% endif %}
+
         </div>
 
         <div class="col-md-6">
