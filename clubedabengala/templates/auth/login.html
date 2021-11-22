@@ -6,17 +6,20 @@
 
 {% block content %}
 <div class="container h-100">
-    <div id="form-div" class="d-flex flex-column justify-center mt-5 h-100 w-50 m-auto">
+    <div class="mb-3 mt-5">
+        <img class="d-block mx-auto" src="{{ url_for('static', filename='images/logo-clube-da-bengala.jpg') }}" alt="">
+    </div>
+    <div id="form-div" class="d-flex row flex-column justify-center mt-5 ">
         <form method="POST" action="{{ url_for('auth.login') }}">
-            <div class="mb-3">
+            <div class="mb-3 d-grid gap-2 col-md-4 mx-auto">
                 <label for="username" class="form-label">Usuário</label>
                 <input type="text" class="form-control" id="username" name="username">
             </div>
-            <div class="mb-3">
+            <div class="mb-3 d-grid gap-2 col-md-4 mx-auto">
                 <label for="password" class="form-label">Senha</label>
                 <input type="password" class="form-control" id="password" name="password">
             </div>
-            <div class="d-grid gap-2 col-6 mx-auto">
+            <div class="d-grid gap-2 col-md-4 mx-auto my-5">
                 <button type="submit" class="btn btn-primary">Entrar</button>
             </div>
         </form>
